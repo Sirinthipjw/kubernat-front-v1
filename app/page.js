@@ -1,5 +1,8 @@
+"use client";
 import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar.jsx";
+import { useState } from "react";
+import Dropdown from "../components/Dropdown.jsx";
 
 const Home = () => {
   return (
