@@ -1,7 +1,10 @@
 "use client";
-import React, { useState } from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 
-const axios = require("axios")
+const axios = require("axios");
 const FillinData = () => {
   // const dispatch = useDispatch();
   const [first_name, setFirst_name] = useState("");
@@ -15,32 +18,82 @@ const FillinData = () => {
   const [id_home, setId_home] = useState("");
   const [village_name, setVillage_name] = useState("");
   const [village_number, setVillage_number] = useState("");
-  const [tombon, setTombon] = useState("");
-  const [district, setDistrict] = useState("");
-  const [province, setProvince] = useState("");
+
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedAmphure, setSelectedAmphure] = useState("");
+  const [selectedTambom, setSelectedTambom] = useState("");
+  
   const [tel, setTel] = useState("");
   const [email, setEmail] = useState("");
 
+  const [tamboms, setTamboms] = useState([]);
+  const [amphures, setAmphures] = useState([]);
+  const [provinces, setProvinces] = useState([]);
+
+  const [lastProvince, setLastP] = useState('')
+  const [lastAmphure, setLastA] = useState('')
+
+  useEffect(() => {
+    if (provinces.length == 0) {
+      fetch("http://localhost:3200/api/provinces")
+        .then((resp) => resp.json())
+        .then((resp) => setProvinces(resp));
+    } else {
+      if (selectedProvince != '') {
+        if (lastProvince == '') {
+          setLastP(selectedProvince)
+        }
+
+        if (amphures.length == 0 || lastProvince != selectedProvince) {
+          fetch(
+            `http://localhost:3200/api/amphures?provinces_id=${selectedProvince}`
+          )
+            .then((resp) => resp.json())
+            .then((resp) => {setAmphures(resp)});
+
+          setLastP(selectedProvince)
+        } else {
+          if (selectedAmphure != '') {
+            if (lastAmphure == '') {
+              setLastA(selectedAmphure)
+            }
+
+            if (tamboms.length == 0 || lastAmphure != selectedAmphure) {
+              fetch(
+                `http://localhost:3200/api/tamboms?amphures_id=${selectedAmphure}`
+              )
+                .then((resp) => resp.json())
+                .then((resp) => {
+                  setTamboms(resp);
+                });
+    
+                setLastA(selectedAmphure)
+            }
+          }
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedProvince, selectedAmphure]);
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-   
+
     if (
-      first_name == '' ||
-      last_name == '' ||
-      age == '' ||
-      id_card == '' ||
-      gender == '' ||
-      height == '' ||
-      weight == '' ||
-      disease == '' ||
-      id_home == '' ||
-      village_name == '' ||
-      village_number == '' ||
-      tombon == '' ||
-      district == '' ||
-      province == '' ||
-      tel == '' ||
-      email == ''
+      first_name == "" ||
+      last_name == "" ||
+      age == "" ||
+      id_card == "" ||
+      gender == "" ||
+      height == "" ||
+      weight == "" ||
+      disease == "" ||
+      id_home == "" ||
+      village_name == "" ||
+      village_number == "" ||
+      tel == "" ||
+      email == ""
     ) {
       alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
       return;
@@ -58,42 +111,27 @@ const FillinData = () => {
       id_home: id_home,
       village_name: village_name,
       village_number: village_number,
+      tamboms: selectedTambom,
+      amphures: selectedAmphure,
+      provinces: selectedProvince,
       tel: tel,
-      email: email
+      email: email,
     };
 
     console.log(payload);
 
-    // const respFetch = await fetch("http://localhost:3200/FillinData", {
-    //   method: "post",
-    //   body: JSON.stringify(payload),
-    // });
+    
 
-    // const respFetch = await fetch("http://localhost:3200/", {
-    //   method: "post",
-    //   body: JSON.stringify(payload),
-    // });
-
-    // const returnResp = await respFetch.text()
-
-    // console.log(returnResp)
-
-    axios.post("http://localhost:3200/FillinData",{data : payload})
-    .then(Response =>{
-      console.log('successful : ',Response.data)
-    })
-    .catch(err =>{
-      console.log("Error data : ", err)
-    })
+    axios
+      .post("http://localhost:3200/FillinData", { data: payload })
+      .then((Response) => {
+        console.log("successful : ", Response.data);
+      })
+      .catch((err) => {
+        console.log("Error data : ", err);
+      });
   };
-  /* const handleChange = (e) =>{
-    const {name, value} = e.target;
-    setFormData((prevData) =>({
-      ...prevData,
-      [name] : value,
-
-    }))
-  }*/
+  
   const handleClick = async (e) => {
     console.log("Button clicked!");
     // Add your logic here
@@ -111,8 +149,8 @@ const FillinData = () => {
       <a className="block mb-2 text-sky-800 font-semibold text-2xl font-kanit px-80 pt-5">
         ข้อมูลส่วนตัวของผู้รับการประเมิน
       </a>
-      <form className="pt-5 px-80" onSubmit={handleSubmit}>
-        <div className="grid gap-6 mb-6 md:grid-cols-2 font-kanit">
+      <form onSubmit={handleSubmit}>
+        <div className="pt-5 px-80 grid gap-6 mb-6 md:grid-cols-2 font-kanit">
           <div>
             <label
               htmlFor="first_name"
@@ -300,57 +338,82 @@ const FillinData = () => {
             />
           </div>
 
-          <div>
-            <label
-              htmlFor="tombon"
-              className="block mb-2 text-sky-800 font-semibold text-lg"
-            >
-              ตำบล
-            </label>
-            <input
-              type="text"
-              id="tombon"
-              placeholder="ตำบล"
-              className="w-full pl-5 pr-3  py-2 p-5 text-gray-500 bg-transparent outline-none border focus:border-sky-800 shadow-sm rounded-lg"
-              value={tombon}
-              onChange={(e) => setTombon(e.target.value)}
-            />
-          </div>
+          
+            <div>
+              <label 
+                htmlFor="provinces"
+                className="block mb-2 text-sky-800 font-semibold text-lg"
+                >
+                จังหวัด
+              </label>
+              <select
+                className="w-full pl-5 pr-3  py-2 p-5 text-gray-500 bg-transparent outline-none border focus:border-sky-800 shadow-sm rounded-lg"
+                onChange={(e) => setSelectedProvince(e.target.value)}
+                value={selectedProvince}
+              >
+                <option value="">Select Province</option>
+                {provinces.map((province) => (
+                  <option
+                    key={province.provinces_id}
+                    value={province.provinces_id}
+                  >
+                    {province.provinces}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <div>
-            <label
-              htmlFor="district"
-              className="block mb-2 text-sky-800 font-semibold text-lg"
-            >
-              อำเภอ
-            </label>
-            <input
-              type="text"
-              id="district"
-              placeholder="อำเภอ"
-              className="w-full pl-5 pr-3  py-2 p-5 text-gray-500 bg-transparent outline-none border focus:border-sky-800 shadow-sm rounded-lg"
-              value={district}
-              onChange={(e) => setDistrict(e.target.value)}
-            />
-          </div>
+            <div>
+            <label 
+                htmlFor="amphures"
+                className="block mb-2 text-sky-800 font-semibold text-lg"
+                >
+                อำเภอ
+              </label>
+              <select
+                className="w-full pl-5 pr-3  py-2 p-5 text-gray-500 bg-transparent outline-none border focus:border-sky-800 shadow-sm rounded-lg"
+                onChange={(e) => setSelectedAmphure(e.target.value)}
+                value={selectedAmphure}
+                disabled={!selectedProvince}
+              >
+                <option value="">Select Amphure</option>
+                {amphures.error == undefined
+                  ? amphures.map((amphure) => (
+                      <option
+                        key={amphure.amphures_id}
+                        value={amphure.amphures_id}
+                      >
+                        {amphure.amphures}
+                      </option>
+                    ))
+                  : ""}
+              </select>
+            </div>
 
-          <div>
-            <label
-              htmlFor="province"
-              className="block mb-2 text-sky-800 font-semibold text-lg"
-            >
-              จังหวัด
-            </label>
-            <input
-              type="text"
-              id="province"
-              placeholder="จังหวัด"
-              className="w-full pl-5 pr-3  py-2 p-5 text-gray-500 bg-transparent outline-none border focus:border-sky-800 shadow-sm rounded-lg"
-              value={province}
-              onChange={(e) => setProvince(e.target.value)}
-            />
-          </div>
-
+            <div>
+            <label 
+                htmlFor="tamboms"
+                className="block mb-2 text-sky-800 font-semibold text-lg"
+                >
+                ตำบล
+              </label>
+              <select
+                className="w-full pl-5 pr-3  py-2 p-5 text-gray-500 bg-transparent outline-none border focus:border-sky-800 shadow-sm rounded-lg"
+                value={selectedTambom}
+                disabled={!selectedAmphure}
+                onChange={(e) => setSelectedTambom(e.target.value)}
+              >
+                <option value="">Select Tambom</option>
+                {tamboms.error == undefined
+                  ? tamboms.map((tambom) => (
+                      <option key={tambom.tamboms_id} value={tambom.tamboms_id}>
+                        {tambom.tamboms}
+                      </option>
+                    ))
+                  : ""}
+              </select>
+            </div>
+          
           <div>
             <label
               htmlFor="tel"
@@ -384,15 +447,18 @@ const FillinData = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-
+        </div>
+        <div className="item-center flex justify-center">
           <button
             type="submit"
-            className="mt-4 w-full bg-blue-500 font-semibold text-white p-2 rounded-md hover:bg-blue-600"
+            className="  mt-4  bg-blue-500 font-semibold text-white p-2 rounded-md hover:bg-blue-600 "
             onClick={handleClick}
+            style={{ width: "150px" }}
           >
             บันทึก
           </button>
         </div>
+        f.map
       </form>
     </>
   );
@@ -400,6 +466,56 @@ const FillinData = () => {
 
 export default FillinData;
 
+//  <div>
+//       <label
+//         htmlFor="tombon"
+//         className="block mb-2 text-sky-800 font-semibold text-lg"
+//       >
+//         ตำบล
+//       </label>
+//       <input
+//         type="text"
+//         id="tombon"
+//         placeholder="ตำบล"
+//         className="w-full pl-5 pr-3  py-2 p-5 text-gray-500 bg-transparent outline-none border focus:border-sky-800 shadow-sm rounded-lg"
+//         value={tombon}
+//         onChange={(e) => setTombon(e.target.value)}
+//       />
+//     </div>
+
+//     <div>
+//       <label
+//         htmlFor="district"
+//         className="block mb-2 text-sky-800 font-semibold text-lg"
+//       >
+//         อำเภอ
+//       </label>
+//       <input
+//         type="text"
+//         id="district"
+//         placeholder="อำเภอ"
+//         className="w-full pl-5 pr-3  py-2 p-5 text-gray-500 bg-transparent outline-none border focus:border-sky-800 shadow-sm rounded-lg"
+//         value={district}
+//         onChange={(e) => setDistrict(e.target.value)}
+//       />
+//     </div>
+
+//     <div>
+//       <label
+//         htmlFor="province"
+//         className="block mb-2 text-sky-800 font-semibold text-lg"
+//       >
+//         จังหวัด
+//       </label>
+//       <input
+//         type="text"
+//         id="province"
+//         placeholder="จังหวัด"
+//         className="w-full pl-5 pr-3  py-2 p-5 text-gray-500 bg-transparent outline-none border focus:border-sky-800 shadow-sm rounded-lg"
+//         value={provinces}
+//         onChange={(e) => setProvince(e.target.value)}
+//       />
+//     </div>
 /*const DefaultColumn = ({ children }) => {
   return (
     <div className='w-full px-24 md:w-1/2 lg:w-1/3'>
