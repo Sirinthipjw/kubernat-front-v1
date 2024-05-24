@@ -1,4 +1,5 @@
 "use client";
+import { step } from '@material-tailwind/react';
 import React, {
   useEffect,
   useState,
@@ -22,6 +23,9 @@ const FillinData = () => {
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedAmphure, setSelectedAmphure] = useState("");
   const [selectedTambom, setSelectedTambom] = useState("");
+
+  
+
   
   const [tel, setTel] = useState("");
   const [email, setEmail] = useState("");
@@ -43,7 +47,7 @@ const FillinData = () => {
         if (lastProvince == '') {
           setLastP(selectedProvince)
         }
-
+        
         if (amphures.length == 0 || lastProvince != selectedProvince) {
           fetch(
             `http://localhost:3200/api/amphures?provinces_id=${selectedProvince}`
@@ -63,11 +67,9 @@ const FillinData = () => {
                 `http://localhost:3200/api/tamboms?amphures_id=${selectedAmphure}`
               )
                 .then((resp) => resp.json())
-                .then((resp) => {
-                  setTamboms(resp);
-                });
+                .then((resp) => {setTamboms(resp)});
     
-                setLastA(selectedAmphure)
+              setLastA(selectedAmphure)
             }
           }
         }
@@ -79,6 +81,10 @@ const FillinData = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+
+    
+
 
     if (
       first_name == "" ||
@@ -98,6 +104,7 @@ const FillinData = () => {
       alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
       return;
     }
+
 
     const payload = {
       first_name: first_name,
@@ -120,22 +127,53 @@ const FillinData = () => {
 
     console.log(payload);
 
-    
+
 
     axios
-      .post("http://localhost:3200/FillinData", { data: payload })
-      .then((Response) => {
-        console.log("successful : ", Response.data);
-      })
-      .catch((err) => {
-        console.log("Error data : ", err);
-      });
-  };
-  
+          .post("http://localhost:3200/FillinData", { data: payload })
+          .then((Response) => {
+            console.log("successful : ", Response.data);
+          })
+          .catch((err) => {
+            console.log("Error data : ", err);
+          });
+      };
+
+    
   const handleClick = async (e) => {
+    
     console.log("Button clicked!");
+    console.log("TUMBON: ", selectedTambom);
     // Add your logic here
   };
+
+  const onChangeProvince = (e) =>{
+  // const index = e.nativeEvent.target.selectedIndex;
+   //const label = e.nativeEvent.target.text;
+  // console.log(label)
+  //setProvinces({...provinces,[e.target.id]:label})
+  setSelectedProvince(e.target.value)
+
+    
+  }
+  const onChangeAmphures = (e) =>{
+    // let index = e.nativeEvent.target.selectedIndex;
+     //let label = e.nativeEvent.target.text;
+    // console.log(label)
+    //setAmphures({...amphures,[e.target.id]:label})
+    setSelectedAmphure(e.target.value)
+    
+  }
+  const onChangeTambon = (e) =>{
+    e.preventDefault();
+    // let index = e.nativeEvent.target.selectedIndex;
+     //let label = e.nativeEvent.target.text;
+    // console.log(label)
+    //setTamboms({...tamboms,[e.target.id]:label})
+    setSelectedTambom(e.target.value)
+    console.log("select : ",selectedTambom)
+    
+  }
 
   return (
     <>
@@ -347,18 +385,19 @@ const FillinData = () => {
                 จังหวัด
               </label>
               <select
+                id="provinces"
                 className="w-full pl-5 pr-3  py-2 p-5 text-gray-500 bg-transparent outline-none border focus:border-sky-800 shadow-sm rounded-lg"
-                onChange={(e) => setSelectedProvince(e.target.value)}
+                onChange={(e) => onChangeProvince(e)}
                 value={selectedProvince}
               >
                 <option value="">Select Province</option>
                 {provinces.map((province) => (
                   <option
                     key={province.provinces_id}
-                    value={province.provinces_id}
-                  >
-                    {province.provinces}
-                  </option>
+                    value={province.provinces_id}>
+                  
+                   {province.provinces}
+                  </option> 
                 ))}
               </select>
             </div>
@@ -371,8 +410,9 @@ const FillinData = () => {
                 อำเภอ
               </label>
               <select
+                id="amphures"
                 className="w-full pl-5 pr-3  py-2 p-5 text-gray-500 bg-transparent outline-none border focus:border-sky-800 shadow-sm rounded-lg"
-                onChange={(e) => setSelectedAmphure(e.target.value)}
+                onChange={(e) => onChangeAmphures(e)}
                 value={selectedAmphure}
                 disabled={!selectedProvince}
               >
@@ -382,8 +422,10 @@ const FillinData = () => {
                       <option
                         key={amphure.amphures_id}
                         value={amphure.amphures_id}
-                      >
-                        {amphure.amphures}
+                        //value1={amphure.amphures}
+                        > 
+                      
+                       {amphure.amphures}  
                       </option>
                     ))
                   : ""}
@@ -398,16 +440,23 @@ const FillinData = () => {
                 ตำบล
               </label>
               <select
+                id="tamboms"
                 className="w-full pl-5 pr-3  py-2 p-5 text-gray-500 bg-transparent outline-none border focus:border-sky-800 shadow-sm rounded-lg"
+                // onChange={(e) => onChangeTambon(e)}
+
+                onChange={ e => onChangeTambon(e)}
                 value={selectedTambom}
                 disabled={!selectedAmphure}
-                onChange={(e) => setSelectedTambom(e.target.value)}
               >
                 <option value="">Select Tambom</option>
                 {tamboms.error == undefined
-                  ? tamboms.map((tambom) => (
-                      <option key={tambom.tamboms_id} value={tambom.tamboms_id}>
-                        {tambom.tamboms}
+                  ?  tamboms.map((tambom) => (
+                      <option 
+                        key={tambom.tamboms_id} 
+                        value={tambom.tamboms_id} 
+                        //value1={tambom.tamboms}
+                      >
+                       {tambom.tamboms}
                       </option>
                     ))
                   : ""}
@@ -458,7 +507,7 @@ const FillinData = () => {
             บันทึก
           </button>
         </div>
-        f.map
+        
       </form>
     </>
   );

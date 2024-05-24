@@ -1,24 +1,8 @@
 import axios from "axios"
+  
 
-// const payload = {
-//     first_name: first_name,
-//     last_name: last_name,
-//     age: age,
-//     id_card: id_card,
-//     gender: gender,
-//     height: height,
-//     weight: weight,
-//     disease: disease,
-//     id_home: id_home,
-//     village_name: village_name,
-//     village_number: village_number,
-//     tel: tel,
-//     email: email
-//   };
-
-//   console.log(payload);
-
-  axios.get("http://localhost:3200/ShowData", {
+const  ShowData = () =>{
+axios.get("http://localhost:3200/ShowData", {
   params: payload
 })
 .then(response => {
@@ -30,7 +14,6 @@ import axios from "axios"
 
 
 
-export default function ShowData(){
 
     return (
 <>
@@ -46,4 +29,6 @@ export default function ShowData(){
     )
    
   }
+
+export default ShowData;
   
