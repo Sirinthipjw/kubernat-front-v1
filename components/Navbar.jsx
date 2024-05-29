@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import Logo from "../pubilc/FOOT.png";
+import Logo from "../public/FOOT.png";
 import Link from "next/link";
 //import "./Navbarstly.css";
 //import { usePathname } from 'next/navigation'
@@ -20,8 +20,8 @@ const Navbar = () => {
             <Image
               src={Logo}
               alt="logopages"
-              width={110}
-              height={85}
+              width= "auto"
+              height= "50"
               priority
             />
           </Link>

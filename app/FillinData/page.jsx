@@ -4,6 +4,8 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import Link from "next/link";
+import { redirect } from 'next/dist/server/api-utils';
 
 const axios = require("axios");
 const FillinData = () => {
@@ -39,7 +41,7 @@ const FillinData = () => {
 
   useEffect(() => {
     if (provinces.length == 0) {
-      fetch("http://localhost:3200/api/provinces")
+      fetch("http://localhost:3200/provinces")
         .then((resp) => resp.json())
         .then((resp) => setProvinces(resp));
     } else {
@@ -50,7 +52,7 @@ const FillinData = () => {
         
         if (amphures.length == 0 || lastProvince != selectedProvince) {
           fetch(
-            `http://localhost:3200/api/amphures?provinces_id=${selectedProvince}`
+            `http://localhost:3200/amphures?provinces_id=${selectedProvince}`
           )
             .then((resp) => resp.json())
             .then((resp) => {setAmphures(resp)});
@@ -64,7 +66,7 @@ const FillinData = () => {
 
             if (tamboms.length == 0 || lastAmphure != selectedAmphure) {
               fetch(
-                `http://localhost:3200/api/tamboms?amphures_id=${selectedAmphure}`
+                `http://localhost:3200/tamboms?amphures_id=${selectedAmphure}`
               )
                 .then((resp) => resp.json())
                 .then((resp) => {setTamboms(resp)});
@@ -81,11 +83,6 @@ const FillinData = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-
-    
-
-
     if (
       first_name == "" ||
       last_name == "" ||
@@ -123,20 +120,16 @@ const FillinData = () => {
       provinces: selectedProvince,
       tel: tel,
       email: email,
+
     };
 
     console.log(payload);
 
 
 
-    axios
+        const res = await axios
           .post("http://localhost:3200/FillinData", { data: payload })
-          .then((Response) => {
-            console.log("successful : ", Response.data);
-          })
-          .catch((err) => {
-            console.log("Error data : ", err);
-          });
+          window.location = '../ShowData'
       };
 
     
@@ -498,6 +491,8 @@ const FillinData = () => {
           </div>
         </div>
         <div className="item-center flex justify-center">
+         
+          
           <button
             type="submit"
             className="  mt-4  bg-blue-500 font-semibold text-white p-2 rounded-md hover:bg-blue-600 "
@@ -506,9 +501,11 @@ const FillinData = () => {
           >
             บันทึก
           </button>
+         
         </div>
         
       </form>
+      
     </>
   );
 };
