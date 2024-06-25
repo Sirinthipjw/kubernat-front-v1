@@ -26,9 +26,6 @@ const FillinData = () => {
   const [selectedAmphure, setSelectedAmphure] = useState("");
   const [selectedTambom, setSelectedTambom] = useState("");
 
-  
-
-  
   const [tel, setTel] = useState("");
   const [email, setEmail] = useState("");
 

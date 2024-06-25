@@ -27,8 +27,8 @@ const Navbar = () => {
           </Link>
           
         </div>
-  <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
-    <ul className=" flex font-medium text-sky-800">
+        <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
+        <ul className=" flex font-medium text-sky-800">
           <li onClick={()=>setMenu("FillinData")} className={menu === "FillinData" ? "text-sky-800" : " text-gray-500"}>
             <button className=" px-5 py-3 hover:text-slate-100 hover:bg-sky-700 rounded-lg ">
               <Link href="/FillinData" ><BsClipboard2PlusFill className="inline-block"/>กรอกข้อมูลผู้รับการประเมิน</Link>
