@@ -36,46 +36,46 @@ const FillinData = () => {
   const [lastProvince, setLastP] = useState('')
   const [lastAmphure, setLastA] = useState('')
 
-  useEffect(() => {
-    if (provinces.length == 0) {
-      fetch("http://localhost:3200/provinces")
-        .then((resp) => resp.json())
-        .then((resp) => setProvinces(resp));
-    } else {
-      if (selectedProvince != '') {
-        if (lastProvince == '') {
-          setLastP(selectedProvince)
-        }
+  // useEffect(() => {
+  //   if (provinces.length == 0) {
+  //     fetch("http://localhost:3200/provinces")
+  //       .then((resp) => resp.json())
+  //       .then((resp) => setProvinces(resp));
+  //   } else {
+  //     if (selectedProvince != '') {
+  //       if (lastProvince == '') {
+  //         setLastP(selectedProvince)
+  //       }
         
-        if (amphures.length == 0 || lastProvince != selectedProvince) {
-          fetch(
-            `http://localhost:3200/amphures?provinces_id=${selectedProvince}`
-          )
-            .then((resp) => resp.json())
-            .then((resp) => {setAmphures(resp)});
+  //       if (amphures.length == 0 || lastProvince != selectedProvince) {
+  //         fetch(
+  //           `http://localhost:3200/amphures?provinces_id=${selectedProvince}`
+  //         )
+  //           .then((resp) => resp.json())
+  //           .then((resp) => {setAmphures(resp)});
 
-          setLastP(selectedProvince)
-        } else {
-          if (selectedAmphure != '') {
-            if (lastAmphure == '') {
-              setLastA(selectedAmphure)
-            }
+  //         setLastP(selectedProvince)
+  //       } else {
+  //         if (selectedAmphure != '') {
+  //           if (lastAmphure == '') {
+  //             setLastA(selectedAmphure)
+  //           }
 
-            if (tamboms.length == 0 || lastAmphure != selectedAmphure) {
-              fetch(
-                `http://localhost:3200/tamboms?amphures_id=${selectedAmphure}`
-              )
-                .then((resp) => resp.json())
-                .then((resp) => {setTamboms(resp)});
+  //           if (tamboms.length == 0 || lastAmphure != selectedAmphure) {
+  //             fetch(
+  //               `http://localhost:3200/tamboms?amphures_id=${selectedAmphure}`
+  //             )
+  //               .then((resp) => resp.json())
+  //               .then((resp) => {setTamboms(resp)});
     
-              setLastA(selectedAmphure)
-            }
-          }
-        }
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedProvince, selectedAmphure]);
+  //             setLastA(selectedAmphure)
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [selectedProvince, selectedAmphure]);
 
 
   const handleSubmit = async (e) => {
@@ -112,9 +112,9 @@ const FillinData = () => {
       id_home: id_home,
       village_name: village_name,
       village_number: village_number,
-      tamboms: selectedTambom,
-      amphures: selectedAmphure,
-      provinces: selectedProvince,
+      // tamboms: selectedTambom,
+      // amphures: selectedAmphure,
+      // provinces: selectedProvince,
       tel: tel,
       email: email,
 
@@ -367,7 +367,68 @@ const FillinData = () => {
           </div>
 
           
-            <div>
+            
+          
+          <div>
+            <label
+              htmlFor="tel"
+              className="block mb-2 text-sky-800 font-semibold text-lg"
+            >
+              เบอร์โทรศัพท์
+            </label>
+            <input
+              type="text"
+              id="tel"
+              placeholder="เบอร์โทรศัพท์"
+              className="w-full pl-5 pr-3  py-2 p-5 text-gray-500 bg-transparent outline-none border focus:border-sky-800 shadow-sm rounded-lg"
+              value={tel}
+              onChange={(e) => setTel(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="Email"
+              className="block mb-2 text-sky-800 font-semibold text-lg"
+            >
+              อีเมล์
+            </label>
+            <input
+              type="text"
+              id="email"
+              placeholder="ex@gmail.com"
+              className="w-full pl-5 pr-3  py-2 p-5 text-gray-500 bg-transparent outline-none border focus:border-sky-800 shadow-sm rounded-lg"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="item-center flex justify-center">
+         
+          
+          <button
+            type="submit"
+            className="  mt-4  bg-blue-500 font-semibold text-white p-2 rounded-md hover:bg-blue-600 "
+            onClick={handleClick}
+            style={{ width: "150px" }}
+          >
+            บันทึก
+          </button>
+         
+        </div>
+        
+      </form>
+      
+    </>
+  );
+};
+
+export default FillinData;
+
+
+
+
+{/* <div>
               <label 
                 htmlFor="provinces"
                 className="block mb-2 text-sky-800 font-semibold text-lg"
@@ -451,63 +512,7 @@ const FillinData = () => {
                     ))
                   : ""}
               </select>
-            </div>
-          
-          <div>
-            <label
-              htmlFor="tel"
-              className="block mb-2 text-sky-800 font-semibold text-lg"
-            >
-              เบอร์โทรศัพท์
-            </label>
-            <input
-              type="text"
-              id="tel"
-              placeholder="เบอร์โทรศัพท์"
-              className="w-full pl-5 pr-3  py-2 p-5 text-gray-500 bg-transparent outline-none border focus:border-sky-800 shadow-sm rounded-lg"
-              value={tel}
-              onChange={(e) => setTel(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="Email"
-              className="block mb-2 text-sky-800 font-semibold text-lg"
-            >
-              อีเมล์
-            </label>
-            <input
-              type="text"
-              id="email"
-              placeholder="ex@gmail.com"
-              className="w-full pl-5 pr-3  py-2 p-5 text-gray-500 bg-transparent outline-none border focus:border-sky-800 shadow-sm rounded-lg"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="item-center flex justify-center">
-         
-          
-          <button
-            type="submit"
-            className="  mt-4  bg-blue-500 font-semibold text-white p-2 rounded-md hover:bg-blue-600 "
-            onClick={handleClick}
-            style={{ width: "150px" }}
-          >
-            บันทึก
-          </button>
-         
-        </div>
-        
-      </form>
-      
-    </>
-  );
-};
-
-export default FillinData;
+            </div> */}
 
 //  <div>
 //       <label

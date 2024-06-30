@@ -32,9 +32,9 @@ const  ShowData = () =>{
             <p>บ้านเลขที่ : {userData.id_home}</p> 
             <p>ชื่อหมู่บ้าน : {userData.village_name}</p> 
             <p>หมู่ที่ : {userData.village_number}</p> 
-            <p>ตำบล : {userData.tamboms.tamboms}</p> 
+            {/* <p>ตำบล : {userData.tamboms.tamboms}</p> 
             <p>อำเภอ : {userData.tamboms.amphure.amphures}</p> 
-            <p>จังหวัด : {userData.tamboms.amphure.province.provinces}</p> 
+            <p>จังหวัด : {userData.tamboms.amphure.province.provinces}</p>  */}
             <p>เบอร์โทรศัพท์ : {userData.tel}</p> 
             <p>อีเมล์ : {userData.email}</p> 
           </div>
